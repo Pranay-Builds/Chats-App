@@ -2,7 +2,7 @@ import Navbar from "./components/Navbar";
 import google_logo from "./assets/google.png"
 import { Link } from "react-router-dom";
 
-function Login() {
+function Signup() {
     return (
         <div className="min-h-screen bg-[#0d1117] text-[#e6edf3]">
 
@@ -14,7 +14,7 @@ function Login() {
                     <img src="/icon.png" className="w-20 h-20 mx-auto" />
 
                     <h1 className="mt-4 font-semibold text-2xl">
-                        Log in to Chats
+                        Sign up on Chats
                     </h1>
 
                     <input
@@ -26,7 +26,7 @@ function Login() {
                         Continue
                     </button>
 
-                    
+
                     <div className="relative my-6 w-full">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-white/10"></div>
@@ -44,12 +44,15 @@ function Login() {
                         Continue with Google
                     </button>
 
+                    <p className="mt-4 text-xs text-[#9ba3b4]">
+                        By continuing, you agree to our Terms & Privacy Policy.
+                    </p>
 
                     <p className="mt-6 text-sm text-[#9ba3b4]">
-                        Don't have an account?{" "}
-                        <Link to="/signup">
+                        Already have an account?{" "}
+                        <Link to="/login">
                             <span className="text-white hover:underline cursor-pointer">
-                                Sign up
+                                Log in
                             </span>
                         </Link>
                     </p>
@@ -59,4 +62,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Signup;

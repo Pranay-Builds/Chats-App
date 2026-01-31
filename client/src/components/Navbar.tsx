@@ -18,9 +18,11 @@ const Navbar = () => {
                         Log in
                     </button>
                 </Link>
-                <button className="text-sm px-4 py-2 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition">
-                    Sign up
-                </button>
+                <Link to="/signup">
+                    <button className="text-sm px-4 py-2 rounded-lg bg-white text-black font-medium hover:bg-gray-200 transition">
+                        Sign up
+                    </button>
+                </Link>
             </div>
         </nav>
     )
