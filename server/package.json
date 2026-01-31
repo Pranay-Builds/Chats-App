@@ -5,16 +5,23 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec \"node --loader ts-node/esm\" src/index.ts"
+    "dev": "node --import dotenv/config --loader ts-node/esm src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^6.19.2",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
+    "better-auth": "^1.4.17",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "prisma": "^6.19.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
