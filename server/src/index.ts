@@ -11,15 +11,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 
+const corsConfig = {
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true,
+}
+
+// CORS - enable before other middleware
+app.use(cors(corsConfig))
+
+
 // Auth routes
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
-
-// CORS - enable before other middleware
-app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-    credentials: true,
-}));
 
 // Body parsing middleware
 app.use(express.json());

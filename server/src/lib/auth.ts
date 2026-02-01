@@ -1,6 +1,8 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
+import { sendVerificationEmail } from "better-auth/api";
+import { sendEmail } from "./sendEmail.js";
 
 const prisma = new PrismaClient();
 
@@ -20,8 +22,25 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false,
+    requireEmailVerification: true,
   },
+
+
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }, request) => {
+      const fixedUrl = new URL(url);
+      fixedUrl.searchParams.set("callbackURL", "http://localhost:5173");
+
+      await sendEmail({
+        to: user.email,
+        subject: "Verify your Chats account",
+        html: `<p>Verify your Chats Account, Click <a href="${fixedUrl.toString()}">here</a> to verify your email</p>`
+      });
+    },
+    sendOnSignUp: true,
+    redirectTo: "http://localhost:5173"
+  },
+
 
   session: {
     expiresIn: 60 * 60 * 24 * 7,
