@@ -38,13 +38,13 @@ export const auth = betterAuth({
       });
     },
     sendOnSignUp: true,
-    redirectTo: "http://localhost:5173"
+    autoSignInAfterVerification: true,
+    redirectTo: "http://localhost:5173/verify"
   },
 
 
   session: {
     expiresIn: 60 * 60 * 24 * 7,
-    cookieName: "session",
   },
 
   socialProviders: {

@@ -1,11 +1,10 @@
 const API_URL = "http://localhost:5000/api";
 
-export async function apiFetch(
-    path: string,
-    options: RequestInit = {}
-) {
+export async function apiFetch(path: string, options: RequestInit = {}) {
+    console.log("➡️ API FETCH:", path);
+
     const res = await fetch(`${API_URL}${path}`, {
-        credentials: "include", 
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
             ...options.headers,
@@ -13,11 +12,14 @@ export async function apiFetch(
         ...options,
     });
 
-    if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        const error = new Error(errorData.message || "API request failed");
-        throw error;
-    }
+    console.log("⬅️ API STATUS:", res.status);
 
-    return res.json();
+    const text = await res.text();
+    console.log("📦 RAW RESPONSE:", text);
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        throw new Error("Response is not JSON");
+    }
 }

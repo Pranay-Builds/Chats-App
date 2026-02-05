@@ -1,53 +1,47 @@
-import express, { Request, Response, NextFunction } from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
+import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
-import { toNodeHandler } from "better-auth/node";
-
-dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-
-const corsConfig = {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+/**
+ * 1️⃣ CORS first (safe)
+ */
+app.use(
+  cors({
+    origin: "http://localhost:5173",
     credentials: true,
-}
+  })
+);
 
-// CORS - enable before other middleware
-app.use(cors(corsConfig))
-
-
-// Auth routes
+/**
+ * 2️⃣ BETTER AUTH HANDLER (BEFORE json)
+ */
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 
-// Body parsing middleware
+app.get("/api/me", async (req, res) => {
+ 	const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    });
+	return res.json(session);
+});
+
+/**
+ * 3️⃣ JSON + cookies ONLY AFTER
+ */
 app.use(express.json());
 app.use(cookieParser());
 
-// Health check
-app.get("/", (req, res) => {
-    res.json({ message: "Server is running" });
+/**
+ * 4️⃣ Test route
+ */
+app.get("/", (_req, res) => {
+  res.json({ ok: true });
 });
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: "Route not found" });
-});
-
-// Error handler - FIXED parameter order
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error("Error:", err);
-    res.status(500).json({
-        error: process.env.NODE_ENV === "production"
-            ? "Internal server error"
-            : err.message
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
+app.listen(5000, () => {
+  console.log("Server running on http://localhost:5000");
 });

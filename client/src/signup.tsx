@@ -4,7 +4,7 @@ import { Eye, EyeClosed } from "lucide-react";
 import google_logo from "./assets/google.png";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { authService } from "./services/auth.service";
+import { authClient } from "./lib/authClient";
 
 function Signup() {
     const [email, setEmail] = useState("");
@@ -29,8 +29,19 @@ function Signup() {
         setLoading(true);
 
         try {
-            await authService.signUpWithEmail(email, password, name);
-            toast.success("Account created successfully! Please check your email to verify your account.");
+            const { error } = await authClient.signUp.email({
+                name,
+                email,
+                password,
+            });
+
+            if (error) {
+                toast.error(error.message);
+                return;
+            }
+
+            toast.success("Check your email to verify your account");
+            
         } catch (error: any) {
             toast.error(error.message || "Failed to create account.");
         } finally {
@@ -74,7 +85,7 @@ function Signup() {
                                 {name.length > 0 && (
                                     <span
                                         className="
-                                    absolute left-3 -top-2 px-1 text-sm
+                                    absolute left-3 -bottom-4 px-1 text-sm
                                     text-gray-400
                                 "
                                     >
@@ -166,6 +177,7 @@ function Signup() {
                             py-2.5 text-sm font-medium
                             hover:bg-gray-200 transition
                         "
+                        onClick={() => authClient.signIn.social({ provider: "google" })}
                     >
                         <img src={google_logo} className="w-5 h-5" alt="Google" />
                         Continue with Google
