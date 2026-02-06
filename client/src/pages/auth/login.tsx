@@ -1,4 +1,4 @@
-import Navbar from "../../components/Navbar";
+
 import google_logo from "../../assets/google.png";
 import { Link, useNavigate } from "react-router-dom";
 import { authClient } from "../../lib/authClient";
@@ -35,7 +35,6 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
 
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-6">
         {/* CARD */}

@@ -9,6 +9,8 @@ import UpdatePassword from "./pages/auth/reset-password";
 import ForgotPassword from "./pages/auth/forgot-password";
 import { GuestRoute } from "./components/GuestRoute";
 import { useEffect } from "react";
+import GuestLayout from "./layouts/GuestLayout";
+import ProtectedLayout from "./layouts/ProtectedLayout";
 
 function App() {
   useEffect(() => {
@@ -27,37 +29,27 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={
-        <GuestRoute>
+        <Routes>
 
-          <Landing />
-        </GuestRoute>
-      } />
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
+      {/* GUEST ROUTES */}
+      <Route element={<GuestRoute />}>
+        <Route element={<GuestLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/verify" element={<Verify />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
+        </Route>
+      </Route>
 
-      <Route path="/login" element={
-        <GuestRoute>
-          <Login />
-        </GuestRoute>
-      } />
+      {/* PROTECTED ROUTES */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedLayout />}>
+          <Route path="/home" element={<Home />} />
+        </Route>
+      </Route>
 
-      <Route path="/signup" element={
-        <GuestRoute>
-
-          <Signup />
-        </GuestRoute>
-      } />
-      <Route path="/forgot-password" element={<ForgotPassword />}></Route>
-      <Route path="/reset-password" element={<UpdatePassword />}></Route>
-      <Route path="/verify" element={<Verify />} />
     </Routes>
   );
 }

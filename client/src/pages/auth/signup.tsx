@@ -1,4 +1,3 @@
-import Navbar from "../../components/Navbar";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 import google_logo from "../../assets/google.png"
@@ -47,7 +46,7 @@ function Signup() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+      
 
       <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-6">
         {/* CARD */}

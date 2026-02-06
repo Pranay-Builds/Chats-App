@@ -1,9 +1,8 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { authClient } from "../lib/authClient";
-import type { ReactNode } from "react";
 import { ClipLoader } from "react-spinners";
 
-export function GuestRoute({ children }: { children: ReactNode }) {
+export function GuestRoute() {
     const { data: session, isPending } = authClient.useSession();
 
     if (isPending) {
@@ -17,5 +16,5 @@ export function GuestRoute({ children }: { children: ReactNode }) {
     if (session) return <Navigate to="/home" />;
 
 
-    return children;
+    return <Outlet />;
 }

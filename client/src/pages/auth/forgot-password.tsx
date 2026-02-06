@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../../components/Navbar";
 import { authClient } from "../../lib/authClient";
 import { toast } from "sonner";
 
@@ -24,7 +23,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+
 
       <div className="flex items-center justify-center px-4 py-20">
         <div className="w-full max-w-md bg-foreground/5 border border-border rounded-2xl p-8 shadow-xl">

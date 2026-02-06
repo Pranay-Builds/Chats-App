@@ -1,27 +1,12 @@
 import shh_emoji from "../assets/shhh.png";
 import lock from "../assets/apple_lock.png";
 import lightning from "../assets/apple_lightning.png";
-import Navbar from "../components/Navbar";
-import { useAuth } from "../context/AuthContext";
-import { ClipLoader } from "react-spinners";
-import { Navigate } from "react-router-dom";
+
 
 function Landing() {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-background text-foreground">
-        <ClipLoader size={40} color="currentColor" />
-      </div>
-    );
-  }
-
-  if (user) return <Navigate to="/home" replace />;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+    <div className="bg-background text-foreground">
 
       {/* HERO */}
       <section className="flex flex-col items-center text-center mt-20 px-6">

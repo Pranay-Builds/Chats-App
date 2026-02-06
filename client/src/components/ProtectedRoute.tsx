@@ -1,9 +1,8 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { authClient } from "../lib/authClient";
-import type { ReactNode } from "react";
 import { ClipLoader } from "react-spinners";
 
-export function ProtectedRoute({ children }: { children: ReactNode }) {
+export function ProtectedRoute() {
   const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
@@ -20,5 +19,5 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     return <Navigate to="/verify" />;
   }
 
-  return children;
+  return <Outlet />;
 }
