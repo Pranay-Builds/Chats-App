@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import cron from "node-cron";
+import { prisma } from "../lib/prisma.js";
 
-const prisma = new PrismaClient();
 
  export async function cleanUnverifiedUsers() {
      cron.schedule("0 * * * *", async () => {
