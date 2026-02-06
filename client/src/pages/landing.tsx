@@ -1,8 +1,8 @@
-import shh_emoji from "./assets/shhh.png";
-import lock from "./assets/apple_lock.png";
-import lightning from "./assets/apple_lightning.png";
-import Navbar from "./components/Navbar";
-import { useAuth } from "./context/AuthContext";
+import shh_emoji from "../assets/shhh.png";
+import lock from "../assets/apple_lock.png";
+import lightning from "../assets/apple_lightning.png";
+import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 import { ClipLoader } from "react-spinners";
 import { Navigate } from "react-router-dom";
 

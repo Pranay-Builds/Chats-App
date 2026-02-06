@@ -1,7 +1,7 @@
-import Navbar from "./components/Navbar";
-import google_logo from "./assets/google.png";
+import Navbar from "../../components/Navbar";
+import google_logo from "../../assets/google.png";
 import { Link, useNavigate } from "react-router-dom";
-import { authClient } from "./lib/authClient";
+import { authClient } from "../../lib/authClient";
 import { toast } from "sonner";
 import { useState } from "react";
 

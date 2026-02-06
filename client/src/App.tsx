@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import Signup from "./signup";
-import Landing from "./landing";
-import Login from "./login";
-import Home from "./home";
-import Verify from "./verify";
+import Signup from "./pages/auth/signup";
+import Landing from "./pages/landing";
+import Login from "./pages/auth/login";
+import Home from "./pages/home";
+import Verify from "./pages/auth/verify";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import UpdatePassword from "./reset-password";
-import ForgotPassword from "./forgot-password";
+import UpdatePassword from "./pages/auth/reset-password";
+import ForgotPassword from "./pages/auth/forgot-password";
 import { GuestRoute } from "./components/GuestRoute";
 import { useEffect } from "react";
 

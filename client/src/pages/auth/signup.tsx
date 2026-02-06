@@ -1,10 +1,10 @@
-import Navbar from "./components/Navbar";
+import Navbar from "../../components/Navbar";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
-import google_logo from "./assets/google.png";
+import google_logo from "../../assets/google.png"
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { authClient } from "./lib/authClient";
+import { authClient } from "../../lib/authClient";
 
 function Signup() {
   const [email, setEmail] = useState("");

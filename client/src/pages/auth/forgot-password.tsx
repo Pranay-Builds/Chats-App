@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Navbar from "./components/Navbar";
-import { authClient } from "./lib/authClient";
+import Navbar from "../../components/Navbar";
+import { authClient } from "../../lib/authClient";
 import { toast } from "sonner";
 
 const ForgotPassword = () => {
