@@ -23,6 +23,21 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      const fixedUrl = new URL(url);
+      fixedUrl.searchParams.set("callbackURL", "http://localhost:5173/reset-password");
+
+
+      void sendEmail({
+        to: user.email,
+        subject: "Reset your password",
+        html: `<p>Click the link to reset your password: <a href="${url}">here</a></p>`,
+      });
+    },
+    onPasswordReset: async ({ user }, request) => {
+      console.log(`Password for user ${user.email} has been reset.`);
+    },
+
   },
 
 

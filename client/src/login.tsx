@@ -11,6 +11,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
@@ -72,6 +73,10 @@ function Login() {
               {loading ? "Logging in..." : "Continue"}
             </button>
           </form>
+
+          <p className="text-left mt-2 text-gray-400 cursor-pointer">
+            <Link to="/reset-password">Forgot password?</Link>
+          </p>
 
           <div className="relative my-6 w-full">
             <div className="absolute inset-0 flex items-center">
