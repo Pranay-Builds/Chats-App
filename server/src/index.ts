@@ -1,9 +1,12 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
+import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
+import { userRoutes } from "./routes/user.routes.js";
 import { cleanUnverifiedUsers } from "./jobs/cleanUnverifiedUsers.js";
+import { protect } from "./middlewares/protect.middleware.js";
+
 
 const app = express();
 
@@ -18,20 +21,18 @@ app.use(
 );
 
 /**
- * 2️⃣ BETTER AUTH HANDLER (BEFORE json)
+ * BETTER AUTH HANDLER (BEFORE json)
  */
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 
-app.get("/api/me", async (req, res) => {
- 	const session = await auth.api.getSession({
-      headers: fromNodeHeaders(req.headers),
-    });
-	return res.json(session);
-});
+/**
+ * Other routes
+ */
+ app.use("/api/users", protect, userRoutes);
 
 /**
- * 3️⃣ JSON + cookies ONLY AFTER
+ * JSON + cookies ONLY AFTER
  */
 app.use(express.json());
 app.use(cookieParser());
@@ -43,7 +44,7 @@ app.use(cookieParser());
 cleanUnverifiedUsers();
 
 /**
- * 4️⃣ Test route
+ *  Test route
  */
 app.get("/", (_req, res) => {
   res.json({ ok: true });

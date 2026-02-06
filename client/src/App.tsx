@@ -11,6 +11,7 @@ import { GuestRoute } from "./components/GuestRoute";
 import { useEffect } from "react";
 import GuestLayout from "./layouts/GuestLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
+import Profile from "./pages/profile";
 
 function App() {
   useEffect(() => {
@@ -47,6 +48,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<ProtectedLayout />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
 
