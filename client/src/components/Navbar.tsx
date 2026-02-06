@@ -14,7 +14,9 @@ const Navbar = () => {
 
             <div className="flex items-center gap-4">
                 <Link to="/login">
-                    <button className="text-sm text-[#9ba3b4] hover:text-white transition">
+                    <button className="text-sm text-foreground/60
+hover:text-foreground
+ transition">
                         Log in
                     </button>
                 </Link>

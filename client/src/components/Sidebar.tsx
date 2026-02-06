@@ -1,14 +1,33 @@
-import { Home, MessageSquare, Phone, Folder, Settings, Sun } from "lucide-react";
+import { Home, MessageSquare, Phone, Folder, Settings, Sun, Moon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
-    const navItem =
-        "w-12 h-12 flex items-center justify-center rounded-xl transition hover:bg-white/10";
+    const [darkMode, setIsDarkMode] = useState<boolean>(false);
 
-    const activeItem = "bg-white/10";
+    const navItem =
+        "w-12 h-12 flex items-center justify-center rounded-xl transition hover:bg-foreground/10";
+
+    const activeItem = "bg-foreground/10";
+
+    const toggleTheme = () => {
+        const html = document.documentElement;
+        html.classList.toggle("dark");
+
+        const isDark = html.classList.contains("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light")
+
+        setIsDarkMode(isDark);
+    };
+
+    useEffect(() => {
+        const isDark = document.documentElement.classList.contains("dark");
+        setIsDarkMode(isDark);
+    }, [])
+
 
     return (
-        <div className="h-screen w-16 bg-[#0d1117] border-r border-white/10 flex flex-col items-center py-4">
+        <div className="h-screen w-16 bg-background text-foreground border-r border-border flex flex-col items-center py-4">
 
             <div className="mb-6">
                 <img src="/icon.png" className="w-10 h-10 rounded-lg" />
@@ -53,7 +72,7 @@ export default function Sidebar() {
                 </NavLink>
             </div>
 
-            {/* BOTTOM SETTINGS */}
+            {/* BOTTOM SECTION */}
             <div className="mt-auto flex flex-col gap-3 items-center">
                 <NavLink
                     to="/settings"
@@ -64,8 +83,8 @@ export default function Sidebar() {
                     <Settings size={20} />
                 </NavLink>
 
-                <button className={`${navItem} cursor-pointer`}>
-                    <Sun size={20}/>
+                <button className={navItem} onClick={toggleTheme}>
+                    {darkMode ? <Sun size={20}/> : <Moon size={20}/>}
                 </button>
 
                 <NavLink
@@ -75,11 +94,10 @@ export default function Sidebar() {
                     }
                 >
                     <img
-                        className="w-10 h-10 rounded-full border border-white/20"
+                        className="w-10 h-10 rounded-full border border-border"
                         src="https://i.ibb.co/6cc19GgX/pranah.jpg"
                     />
                 </NavLink>
-                
             </div>
         </div>
     );

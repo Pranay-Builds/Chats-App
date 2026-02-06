@@ -8,8 +8,24 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import UpdatePassword from "./reset-password";
 import ForgotPassword from "./forgot-password";
 import { GuestRoute } from "./components/GuestRoute";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    };
+
+    const systemPrefersDark =
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (systemPrefersDark) {
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={

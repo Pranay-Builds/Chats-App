@@ -11,7 +11,7 @@ export default function Verify() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#101010] flex items-center justify-center">
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
       Verifying your email…
     </div>
   );

@@ -8,7 +8,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
   if (isPending) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#0d1117] text-white">
+      <div className="flex justify-center items-center min-h-screen bg-background text-foreground">
         <ClipLoader size={40} color="white" />
       </div>
     )

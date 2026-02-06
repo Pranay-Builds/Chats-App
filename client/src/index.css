@@ -13,3 +13,23 @@ body {
     Arial,
     sans-serif;
 }
+
+
+:root {
+  --background: 255 255 255;
+  --foreground: 15 23 42;
+  --border: 226 232 240;
+}
+
+.dark {
+  --background: 16 16 16;
+  --foreground: 230 237 243;
+  --border: 39 44 51;
+}
+
+
+@theme {
+  --color-background: rgb(var(--background));
+  --color-foreground: rgb(var(--foreground));
+  --color-border: rgb(var(--border));
+}
