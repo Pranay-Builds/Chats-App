@@ -91,7 +91,7 @@ function Login() {
 
           <button
             onClick={() =>
-              authClient.signIn.social({ provider: "google" })
+              authClient.signIn.social({ provider: "google", callbackURL: "http://localhost:5173" })
             }
             className="w-full flex items-center justify-center gap-3 rounded-lg border border-white/20 bg-transparent py-2.5 text-sm font-medium hover:bg-white/5 transition"
           >

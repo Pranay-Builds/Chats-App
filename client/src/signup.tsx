@@ -177,7 +177,7 @@ function Signup() {
                             py-2.5 text-sm font-medium
                             hover:bg-gray-200 transition
                         "
-                        onClick={() => authClient.signIn.social({ provider: "google" })}
+                        onClick={() => authClient.signIn.social({ provider: "google", callbackURL: "http://localhost:5173" })}
                     >
                         <img src={google_logo} className="w-5 h-5" alt="Google" />
                         Continue with Google

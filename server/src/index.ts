@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
+import { cleanUnverifiedUsers } from "./jobs/cleanUnverifiedUsers.js";
 
 const app = express();
 
@@ -34,6 +35,12 @@ app.get("/api/me", async (req, res) => {
  */
 app.use(express.json());
 app.use(cookieParser());
+
+
+/**
+ * Background jobs
+ */
+cleanUnverifiedUsers();
 
 /**
  * 4️⃣ Test route
