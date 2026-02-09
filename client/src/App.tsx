@@ -12,25 +12,30 @@ import { useEffect } from "react";
 import GuestLayout from "./layouts/GuestLayout";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 import Profile from "./pages/profile";
+import { useUser } from "./store/useUser";
+import { authClient } from "./lib/authClient";
 
 function App() {
+  const setUser = useUser((s) => s.setUser);
+  const { data: session, isPending } = authClient.useSession();
+  console.log("User is: "+ session?.user)
+
+  useEffect(() => {
+    if (!isPending) {
+      setUser(session?.user ?? null);
+    };
+  }, [session, isPending]);
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
 
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
     };
-
-    const systemPrefersDark =
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    if (systemPrefersDark) {
-      document.documentElement.classList.add("dark");
-    }
   }, []);
 
   return (
-        <Routes>
+    <Routes>
 
       {/* GUEST ROUTES */}
       <Route element={<GuestRoute />}>

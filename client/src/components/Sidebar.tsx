@@ -1,14 +1,17 @@
 import { Home, MessageSquare, Phone, Folder, Settings, Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import Avatar from "./Avatar";
+import { useUser } from "../store/useUser";
 
 export default function Sidebar() {
     const [darkMode, setIsDarkMode] = useState<boolean>(false);
+    const { user } = useUser();
 
     const navItem =
         "w-12 h-12 flex items-center justify-center rounded-xl transition hover:bg-foreground/10";
-
     const activeItem = "bg-foreground/10";
+
 
     const toggleTheme = () => {
         const html = document.documentElement;
@@ -84,7 +87,7 @@ export default function Sidebar() {
                 </NavLink>
 
                 <button className={navItem} onClick={toggleTheme}>
-                    {darkMode ? <Sun size={20}/> : <Moon size={20}/>}
+                    {darkMode ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
 
                 <NavLink
@@ -93,9 +96,9 @@ export default function Sidebar() {
                         `${navItem} ${isActive ? activeItem : ""}`
                     }
                 >
-                    <img
-                        className="w-10 h-10 rounded-full border border-border"
-                        src="https://i.ibb.co/6cc19GgX/pranah.jpg"
+                    <Avatar
+                        name={user?.name}
+                        image={user?.image}
                     />
                 </NavLink>
             </div>

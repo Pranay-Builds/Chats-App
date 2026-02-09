@@ -5,7 +5,14 @@ type FileUploadProps = {
     folderName: string;
 }
 
-export async function uploadToCloudinary({ fileBuffer, folderName }: FileUploadProps): Promise<string> {
+
+type UploadResult = {
+  url: string;
+  publicId: string;
+};
+
+
+export async function uploadToCloudinary({ fileBuffer, folderName }: FileUploadProps): Promise<UploadResult> {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream({
             folder: folderName
@@ -19,8 +26,10 @@ export async function uploadToCloudinary({ fileBuffer, folderName }: FileUploadP
                     return;
                 }
 
-                resolve(result.secure_url);
-
+                resolve({
+                    url: result.secure_url,
+                    publicId: result.public_id
+                });
             }
         );
 

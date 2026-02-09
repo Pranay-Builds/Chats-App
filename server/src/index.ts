@@ -26,16 +26,24 @@ app.use(
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 
+
+/**
+ * JSON only when not multipart (so file upload body is not consumed before multer)
+ */
+app.use((req, res, next) => {
+  const ct = req.headers["content-type"] || "";
+  if (ct.includes("multipart/form-data")) {
+    return next();
+  }
+  express.json()(req, res, next);
+});
+app.use(cookieParser());
+
+
 /**
  * Other routes
  */
  app.use("/api/users", protect, userRoutes);
-
-/**
- * JSON + cookies ONLY AFTER
- */
-app.use(express.json());
-app.use(cookieParser());
 
 
 /**

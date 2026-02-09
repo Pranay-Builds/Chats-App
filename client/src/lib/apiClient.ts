@@ -1,12 +1,15 @@
-const API_URL = "http://localhost:5000/api";
+const API_URL = "http://localhost:5000/api"
+
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
     console.log("➡️ API FETCH:", path);
 
+    const isFormData = options.body instanceof FormData;
+
     const res = await fetch(`${API_URL}${path}`, {
         credentials: "include",
         headers: {
-            "Content-Type": "application/json",
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
             ...options.headers,
         },
         ...options,
@@ -18,7 +21,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     console.log("📦 RAW RESPONSE:", text);
 
     try {
-        return JSON.parse(text);
+        const parsed = JSON.parse(text);
+        return {
+            ok: res.ok,
+            status: res.status,
+            data: parsed
+        };
     } catch {
         throw new Error("Response is not JSON");
     }
