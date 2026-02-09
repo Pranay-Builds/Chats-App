@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Signup from "./pages/auth/signup";
 import Landing from "./pages/landing";
 import Login from "./pages/auth/login";
-import Home from "./pages/home";
 import Verify from "./pages/auth/verify";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import UpdatePassword from "./pages/auth/reset-password";
@@ -14,6 +13,7 @@ import ProtectedLayout from "./layouts/ProtectedLayout";
 import Profile from "./pages/profile";
 import { useUser } from "./store/useUser";
 import { authClient } from "./lib/authClient";
+import Chats from "./pages/chats";
 
 function App() {
   const { setUser, fetchProfile } = useUser();
@@ -53,7 +53,7 @@ function App() {
       {/* PROTECTED ROUTES */}
       <Route element={<ProtectedRoute />}>
         <Route element={<ProtectedLayout />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/chats" element={<Chats />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>

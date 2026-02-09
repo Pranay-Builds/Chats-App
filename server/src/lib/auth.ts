@@ -3,7 +3,6 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
 import { sendVerificationEmail, signUpEmail } from "better-auth/api";
 import { sendEmail } from "./sendEmail.js";
-import { userAc } from "better-auth/plugins/admin/access";
 import { generateFriendCode } from "../utils/generateFriendCode.js";
 
 const prisma = new PrismaClient();
@@ -19,7 +18,6 @@ export const auth = betterAuth({
     additionalFields: {
       friendCode: {
         type: "string",
-        required: true,
         input: false,
         unique: true
       }
@@ -84,27 +82,16 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (user, ctx) => {
-          let friendCode: string | null = null;
-          let created = false;
+        before: async (user) => {
+          return {
+            data: {
+              ...user,
+              friendCode: generateFriendCode(),
+            },
+          };
+        },
+      },
+    },
+  },
 
-
-          while(!created) {
-            try {
-              friendCode = generateFriendCode();
-
-              await prisma.user.update({
-                where: { id: user.id },
-                data: { friendCode }
-              });
-
-              created = true;
-            } catch (error: any) {
-              if (error.code !== "P002") throw error;
-            }
-          }
-        }
-      }
-    }
-  }
 });

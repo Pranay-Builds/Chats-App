@@ -38,17 +38,10 @@ export default function Sidebar() {
 
             {/* MAIN NAV */}
             <div className="flex flex-col gap-3 flex-1">
-                <NavLink
-                    to="/home"
-                    className={({ isActive }) =>
-                        `${navItem} ${isActive ? activeItem : ""}`
-                    }
-                >
-                    <Home size={20} />
-                </NavLink>
+
 
                 <NavLink
-                    to="/messages"
+                    to="/chats"
                     className={({ isActive }) =>
                         `${navItem} ${isActive ? activeItem : ""}`
                     }

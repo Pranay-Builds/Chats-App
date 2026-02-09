@@ -13,7 +13,7 @@ export function GuestRoute() {
         )
     }
 
-    if (session) return <Navigate to="/home" />;
+    if (session) return <Navigate to="/chats" />;
 
 
     return <Outlet />;

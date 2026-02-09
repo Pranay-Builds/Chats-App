@@ -1,6 +1,6 @@
 
 
-function Home() {
+function Chats() {
   
   return (
     <div className="min-h-screen w-full bg-background text-foreground flex">
@@ -9,4 +9,4 @@ function Home() {
   )
 }
 
-export default Home
+export default Chats
