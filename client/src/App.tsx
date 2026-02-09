@@ -16,15 +16,16 @@ import { useUser } from "./store/useUser";
 import { authClient } from "./lib/authClient";
 
 function App() {
-  const setUser = useUser((s) => s.setUser);
+  const { setUser, fetchProfile } = useUser();
   const { data: session, isPending } = authClient.useSession();
-  console.log("User is: "+ session?.user)
+  console.log("User is: " + session?.user)
 
   useEffect(() => {
-    if (!isPending) {
-      setUser(session?.user ?? null);
-    };
-  }, [session, isPending]);
+    if (!isPending && session?.user) {
+      fetchProfile();
+    }
+  }, [session, isPending, fetchProfile]);
+
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");

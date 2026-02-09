@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
-import { sendVerificationEmail } from "better-auth/api";
+import { sendVerificationEmail, signUpEmail } from "better-auth/api";
 import { sendEmail } from "./sendEmail.js";
+import { userAc } from "better-auth/plugins/admin/access";
+import { generateFriendCode } from "../utils/generateFriendCode.js";
 
 const prisma = new PrismaClient();
 
@@ -12,6 +14,17 @@ if (!process.env.BETTER_AUTH_SECRET) {
 
 export const auth = betterAuth({
   baseURL: "http://localhost:5000",
+
+  user: {
+    additionalFields: {
+      friendCode: {
+        type: "string",
+        required: true,
+        input: false,
+        unique: true
+      }
+    }
+  },
 
   secret: process.env.BETTER_AUTH_SECRET,
   trustedOrigins: ["http://localhost:5173"],
@@ -54,7 +67,6 @@ export const auth = betterAuth({
     },
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
-    redirectTo: "http://localhost:5173/verify"
   },
 
 
@@ -68,4 +80,31 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
+
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user, ctx) => {
+          let friendCode: string | null = null;
+          let created = false;
+
+
+          while(!created) {
+            try {
+              friendCode = generateFriendCode();
+
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { friendCode }
+              });
+
+              created = true;
+            } catch (error: any) {
+              if (error.code !== "P002") throw error;
+            }
+          }
+        }
+      }
+    }
+  }
 });

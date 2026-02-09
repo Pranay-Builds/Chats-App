@@ -68,7 +68,7 @@ export async function updateUserProfile(req: Request, res: Response) {
 
         const { name, bio } = req.body;
 
-        if (!name || !bio) {
+        if (!name && !bio) {
             return res.status(400).json({
                 ok: false,
                 message: "Please fill in either name or bio or both"
@@ -84,7 +84,7 @@ export async function updateUserProfile(req: Request, res: Response) {
         };
 
 
-        await prisma.user.update({
+        const updatedUser = await prisma.user.update({
             where: { id: user.id },
             data: {
                 name: name,
@@ -95,7 +95,8 @@ export async function updateUserProfile(req: Request, res: Response) {
 
         res.json({
             ok: true,
-            message: "Account uploaded successfully"
+            message: "Account uploaded successfully",
+            user: updatedUser
         });
     } catch (error) {
         console.error(error);
@@ -105,3 +106,28 @@ export async function updateUserProfile(req: Request, res: Response) {
         });
     }
 };
+
+
+export async function getUserProfile(req: Request, res: Response) {
+    try {
+        const user = req.user;
+
+        const profile = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: {
+                id: true,
+                name: true,
+                bio: true,
+                image: true,
+                email: true,
+                friendCode: true,
+                createdAt: true,
+            }
+        });
+
+        return res.status(200).json({ ok: true, user: profile })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ ok: false, message: "Failed to get profile data, Please try again later" })
+    }
+}
