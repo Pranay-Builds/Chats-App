@@ -8,6 +8,7 @@ import { friendRoutes } from "./routes/friends.routes.js";
 import { cleanUnverifiedUsers } from "./jobs/cleanUnverifiedUsers.js";
 import { protect } from "./middlewares/protect.middleware.js";
 import { chatRoutes } from "./routes/chat.routes.js";
+import { messageRoutes } from "./routes/messageRoutes.js";
 
 
 const app = express();
@@ -47,7 +48,8 @@ app.use(cookieParser());
  */
  app.use("/api/users", protect, userRoutes);
  app.use("/api/friends", protect, friendRoutes);
- app.use("/api/chats", protect, chatRoutes)
+ app.use("/api/chats", protect, chatRoutes);
+ app.use("/api/messages", protect, messageRoutes);
 
 
 /**

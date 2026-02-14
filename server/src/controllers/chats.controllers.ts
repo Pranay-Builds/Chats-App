@@ -21,71 +21,55 @@ export async function getChats(req: Request, res: Response) {
             select: {
                 id: true,
                 name: true,
-                members: true,
+                isGroup: true,
+                members: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true
+                            }
+                        }
+                    }
+                },
                 lastMessage: true,
                 lastMessageAt: true
+            },
+            orderBy: {
+                lastMessageAt: "desc"
             }
         });
 
+        const shapedChats = chats.map(chat => {
+            if (chat.isGroup) {
+                return {
+                    id: chat.id,
+                    name: chat.name,
+                    lastMessage: chat.lastMessage
+                }
+            };
 
-        return res.status(200).json({ ok: true, chats });
+            const otherUser = chat.members.find(
+                m => m.user.id !== user.id
+            );
+
+            return {
+                id: chat.id,
+                displayName: otherUser?.user.name,
+                image: otherUser?.user.image,
+                lastMessage: chat.lastMessage
+            };
+
+        })
+
+        return res.status(200).json({ ok: true, chats: shapedChats });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ ok: false, message: "Failed to get chats" });
     }
 };
 
-// To create 1:1 Chats
-export async function createChat(req: Request, res: Response) {
-    try {
-        const user = req.user;
-        const { friendId, messageContent } = req.body;
-
-
-        if (!friendId || !messageContent) {
-            return res.status(400).json({ ok: false, message: "Friend ID and message content required" });
-        };
-
-        const friend = await prisma.friendship.findFirst({
-            where: {
-                OR: [
-                    { user1Id: friendId, user2Id: user.id },
-                    { user1Id: user.id, user2Id: friendId }
-                ]
-            }
-        });
-
-
-        if (!friend) {
-            return res.status(404).json({ ok: false, message: "You can only create a chat with your friends" });
-        };
-
-        // Find existing chats - IF yes then do not allow
-        const existingChat = await prisma.conversationMember.findFirst({
-            where: {
-                userId: user.id,
-                conversation: {
-                    isGroup: false,
-                    members: {
-                        some: {
-                            userId: friendId
-                        }
-                    }
-                }
-            }
-        });
-
-
-        if (existingChat) {
-            return res.status(409).json({ ok: false, message: "Chat already exists" });
-        }
-
-        return res.status(201).json({ ok: true })
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ ok: false, message: "Server error, failed to create chat" });
-    }
-};
 
 // Create Group Chats
 export async function createGroupChat(req: Request, res: Response) {
@@ -120,7 +104,7 @@ export async function createGroupChat(req: Request, res: Response) {
         });
 
 
-        return res.status(201).json({ ok: true, message: "Group chat successfully created" });
+        return res.status(201).json({ ok: true, newGroupChat });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ ok: false, message: "An error occured while creating group chat" })
@@ -138,7 +122,7 @@ export async function getChatDetails(req: Request, res: Response) {
         };
 
 
-        const chat = await prisma.conversation.findUnique({
+        const chat = await prisma.conversation.findFirst({
             where: { id: chatId, members: { some: { userId: user.id } } },
             select: {
                 name: true,
@@ -180,9 +164,10 @@ export async function leaveChat(req: Request, res: Response) {
             return res.status(404).json({ ok: false, messaege: "Chat not found or forbidden" })
         };
 
+
         return res.status(200).json({ ok: true, message: "You left the chat" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ ok: false, message: "Failed to leave chat" });
     }
-}
+};
