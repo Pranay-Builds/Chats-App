@@ -23,6 +23,9 @@ model User {
   image    String?
   imagePublicId   String?
 
+  sentFriendRequests     FriendRequest[] @relation("SentRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedRequests")
+
   @@map("user")
 }
 
@@ -76,4 +79,34 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model FriendRequest {
+  id          String   @id @default(cuid())
+  senderId    String
+  receiverId  String
+  status      String   // pending | accepted | rejected
+  createdAt   DateTime @default(now())
+
+  sender   User @relation("SentRequests", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedRequests", fields: [receiverId], references: [id])
+
+  @@unique([senderId, receiverId])
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  createdAt DateTime @default(now())
+
+  @@unique([user1Id, user2Id])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  senderId  String
+  receiverId String
+  content   String
+  createdAt DateTime @default(now())
 }
