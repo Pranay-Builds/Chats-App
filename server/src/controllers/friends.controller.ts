@@ -96,4 +96,135 @@ export async function sendFriendRequest(req: Request, res: Response) {
             message: "Failed to send friend request"
         });
     }
-}
+};
+
+export async function getFriendRequests(req: Request, res: Response) {
+    try {
+        const user = req.user;
+
+        // Find friend requests sent to THIS user
+        const requests = await prisma.friendRequest.findMany({
+            where: {
+                receiverId: user.id,
+                status: "pending"
+            },
+            select: {
+                id: true,
+                createdAt: true,
+                sender: {
+                    select: {
+                        id: true,
+                        name: true,
+                        image: true,
+                        bio: true,
+                        friendCode: true,
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
+
+        return res.status(200).json({ ok: true, requests });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            ok: false,
+            message: "Failed to get friend requests"
+        });
+    }
+};
+
+export async function rejectFriendRequest(req: Request, res: Response) {
+    try {
+        const user = req.user;
+        const { id } = req.params as { id: string };
+
+        const request = await prisma.friendRequest.findUnique({
+            where: { id }
+        });
+
+        if (!request) {
+            return res.status(404).json({
+                ok: false,
+                message: "Request not found"
+            });
+        }
+
+        if (request.receiverId !== user.id) {
+            return res.status(403).json({
+                ok: false,
+                message: "Not allowed"
+            });
+        }
+
+        await prisma.friendRequest.delete({
+            where: { id }
+        });
+
+        return res.json({
+            ok: true,
+            message: "Friend request rejected"
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            ok: false,
+            message: "Failed to rejecr friend request"
+        });
+    }
+};
+
+export async function acceptFriendRequest(req: Request, res: Response) {
+    try {
+        const user = req.user;
+        const { id } = req.params as { id: string };
+
+
+        const request = await prisma.friendRequest.findUnique({
+            where: { id: id }
+        });
+
+
+        if (!request) {
+            return res.status(404).json({ ok: false, message: "Friend request does not exist" });
+        };
+
+
+        if (request.receiverId !== user.id) {
+            return res.status(403).json({
+                ok: false,
+                message: "Not allowed"
+            });
+        };
+
+
+        await prisma.$transaction(async (tx) => {
+
+            // create friendship
+            await tx.friendship.create({
+                data: {
+                    user1Id: request.senderId,
+                    user2Id: request.receiverId
+                }
+            });
+
+            // update request
+            await tx.friendRequest.update({
+                where: { id },
+                data: { status: "accepted" }
+            });
+        });
+
+
+
+        return res.json({
+            ok: true,
+            message: "Friend request accepted"
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ ok: false, message: "Failed to accept friend request" });
+    }
+};
