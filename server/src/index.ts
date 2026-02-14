@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 import { userRoutes } from "./routes/user.routes.js";
+import { friendRoutes } from "./routes/friends.routes.js";
 import { cleanUnverifiedUsers } from "./jobs/cleanUnverifiedUsers.js";
 import { protect } from "./middlewares/protect.middleware.js";
 
@@ -44,6 +45,7 @@ app.use(cookieParser());
  * Other routes
  */
  app.use("/api/users", protect, userRoutes);
+ app.use("/api/friends", protect, friendRoutes);
 
 
 /**
