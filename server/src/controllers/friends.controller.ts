@@ -42,7 +42,7 @@ export async function sendFriendRequest(req: Request, res: Response) {
                         receiverId: user.id
                     }
                 ],
-                status: "pending"
+                status: "PENDING"
             }
         });
 
@@ -81,7 +81,7 @@ export async function sendFriendRequest(req: Request, res: Response) {
             data: {
                 senderId: user.id,
                 receiverId: receiver.id,
-                status: "pending"
+                status: "PENDING"
             }
         });
 
@@ -103,7 +103,7 @@ export async function getFriendRequests(req: Request, res: Response) {
         const requests = await prisma.friendRequest.findMany({
             where: {
                 receiverId: user.id,
-                status: "pending"
+                status: "PENDING"
             },
             select: {
                 id: true,
@@ -210,7 +210,7 @@ export async function acceptFriendRequest(req: Request, res: Response) {
             // update request
             await tx.friendRequest.update({
                 where: { id },
-                data: { status: "accepted" }
+                data: { status: "PENDING" }
             });
         });
 
