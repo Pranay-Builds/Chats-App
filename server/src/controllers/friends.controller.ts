@@ -25,9 +25,6 @@ export async function sendFriendRequest(req: Request, res: Response) {
             }
         });
 
-
-
-
         if (!receiver) {
             return res.status(400).json({ ok: false, message: "Invalid friend code or user not found" });
         };
@@ -228,3 +225,66 @@ export async function acceptFriendRequest(req: Request, res: Response) {
         return res.status(500).json({ ok: false, message: "Failed to accept friend request" });
     }
 };
+
+export async function getFriends(req: Request, res: Response) {
+    try {
+        const user = req.user;
+
+        const friends = await prisma.friendship.findMany({
+            where: {
+                OR: [
+                    { user1Id: user.id },
+                    { user2Id: user.id }
+                ]
+            }
+        });
+
+        return res.status(200).json({ ok: true, friends })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ ok: false, message: "Failed to get friends" });
+    }
+};
+
+export async function removeFriend(req: Request, res: Response) {
+    try {
+        const user = req.user;
+        const { friendId } = req.params as { friendId: string };
+
+        if (!friendId) {
+            return res.status(400).json({ ok: false, message: "Friend ID not found" })
+        };
+
+
+        const friendship = await prisma.friendship.findFirst({
+            where: {
+                OR: [
+                    { user1Id: user.id, user2Id: friendId },
+                    { user1Id: friendId, user2Id: user.id }
+                ]
+            }
+        });
+
+        if (!friendship) {
+            return res.status(404).json({
+                ok: false,
+                message: "You are not friends with this user"
+            });
+        }
+
+        await prisma.friendship.delete({
+            where: { id: friendship.id }
+        });
+
+        return res.json({
+            ok: true,
+            message: "Friend removed successfully"
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            ok: false,
+            message: "Failed to remove friend"
+        });
+    }
+}
