@@ -184,7 +184,7 @@ const Add = () => {
               <button
                 onClick={() => handleSendRequest(u)}
                 disabled={sendingTo === u.id}
-                className="text-xs px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-60"
+                className="text-xs px-3 py-1 rounded-lg text-white bg-blue-600 hover:bg-blue-500 disabled:opacity-60"
               >
                 {sendingTo === u.id ? "Sending..." : "Add friend"}
               </button>

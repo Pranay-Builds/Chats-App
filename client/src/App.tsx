@@ -15,11 +15,14 @@ import { useUser } from "./store/useUser";
 import { authClient } from "./lib/authClient";
 import Chats from "./pages/chats";
 import Add from "./pages/add";
+import Friends from "./pages/friends";
+import EmptyChat from "./components/EmptyChat";
+import ChatWindow from "./components/ChatWindow";
 
 function App() {
   const { setUser, fetchProfile } = useUser();
   const { data: session, isPending } = authClient.useSession();
-  console.log("User is: " + session?.user)
+  console.log("User is: " + session?.user);
 
   useEffect(() => {
     if (!isPending && session?.user) {
@@ -27,18 +30,16 @@ function App() {
     }
   }, [session, isPending, fetchProfile]);
 
-
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
 
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
-    };
+    }
   }, []);
 
   return (
     <Routes>
-
       {/* GUEST ROUTES */}
       <Route element={<GuestRoute />}>
         <Route element={<GuestLayout />}>
@@ -54,12 +55,15 @@ function App() {
       {/* PROTECTED ROUTES */}
       <Route element={<ProtectedRoute />}>
         <Route element={<ProtectedLayout />}>
-          <Route path="/chats" element={<Chats />} />
+          <Route path="/chats" element={<Chats />}>
+            <Route index element={<EmptyChat />} />
+            <Route path=":chatId" element={<ChatWindow />} />
+          </Route>
           <Route path="/profile" element={<Profile />} />
           <Route path="/add" element={<Add />} />
+          <Route path="/friends" element={<Friends />} />
         </Route>
       </Route>
-
     </Routes>
   );
 }
