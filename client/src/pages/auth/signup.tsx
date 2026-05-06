@@ -126,7 +126,7 @@ function Signup() {
             </div>
 
             <button
-              className="mt-4 w-full py-2.5 rounded-lg bg-blue-500 font-medium hover:bg-blue-600 transition disabled:opacity-50"
+              className="mt-4 w-full py-2.5 rounded-lg bg-blue-500 font-medium text-white hover:bg-blue-600 transition disabled:opacity-50"
               disabled={isDisabled}
               type="submit"
             >

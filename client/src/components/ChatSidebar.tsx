@@ -1,53 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import { Search } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { apiFetch } from "../lib/apiClient";
 
 type Chat = {
   id: string;
   name: string;
-  lastMessage: string;
-  time: string;
-  unread?: number;
-  online?: boolean;
+  lastMessage?: string | null;
   image?: string | null;
 };
 
-const dummyChats: Chat[] = [
-  {
-    id: "1",
-    name: "Chakory",
-    lastMessage: "Heyllo!",
-    time: "12:45",
-    unread: 2,
-    online: true,
-  },
-  {
-    id: "2",
-    name: "Pranay",
-    lastMessage: "Send the repo link",
-    time: "11:10",
-  },
-  {
-    id: "3",
-    name: "Manvi",
-    lastMessage: "Okay 👍",
-    time: "Yesterday",
-    online: true,
-  },
-  {
-    id: "4",
-    name: "Design Team",
-    lastMessage: "New icons look clean",
-    time: "Mon",
-    unread: 5,
-  },
-];
-
 export default function ChatsSidebar() {
   const [search, setSearch] = useState("");
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredChats = dummyChats.filter((chat) =>
+  useEffect(() => {
+    async function loadChats() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await apiFetch("/chats", { method: "GET" });
+
+        if (!res.ok) {
+          setError("Failed to load chats");
+          setChats([]);
+          return;
+        }
+
+        const apiChats = res.data.chats as Array<{
+          id: string;
+          name?: string | null;
+          displayName?: string | null;
+          lastMessage?: string | null;
+          image?: string | null;
+        }>;
+
+        const mapped: Chat[] = apiChats.map((chat) => ({
+          id: chat.id,
+          name: chat.name || chat.displayName || "Unknown",
+          lastMessage: chat.lastMessage ?? null,
+          image: chat.image ?? null,
+        }));
+
+        setChats(mapped);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load chats");
+        setChats([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadChats();
+  }, []);
+
+  const filteredChats = chats.filter((chat) =>
     chat.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -59,7 +70,7 @@ export default function ChatsSidebar() {
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Chats</h1>
           <span className="text-xs opacity-60">
-            {filteredChats.length}
+            {loading ? "…" : filteredChats.length}
           </span>
         </div>
 
@@ -78,7 +89,25 @@ export default function ChatsSidebar() {
 
       {/* CHAT LIST */}
       <div className="flex-1 overflow-y-auto">
-        {filteredChats.map((chat) => (
+        {loading && (
+          <div className="px-4 py-3 text-sm opacity-60">
+            Loading chats...
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && filteredChats.length === 0 && (
+          <div className="px-4 py-3 text-sm opacity-60">
+            No chats yet.
+          </div>
+        )}
+
+        {!loading && !error && filteredChats.map((chat) => (
           <NavLink
             key={chat.id}
             to={`/chats/${chat.id}`}
@@ -91,43 +120,22 @@ export default function ChatsSidebar() {
             {/* Avatar + Online dot */}
             <div className="relative">
               <Avatar name={chat.name} image={chat.image} />
-
-              {chat.online && (
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background" />
-              )}
             </div>
 
             {/* Chat Info */}
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-center">
-                <p
-                  className={`truncate ${
-                    chat.unread ? "font-semibold" : "font-medium"
-                  }`}
-                >
+                <p className="truncate font-medium">
                   {chat.name}
                 </p>
-
-                <span className="text-xs opacity-60">
-                  {chat.time}
-                </span>
               </div>
 
-              <p
-                className={`text-sm truncate ${
-                  chat.unread ? "opacity-90" : "opacity-60"
-                }`}
-              >
-                {chat.lastMessage}
-              </p>
+              {chat.lastMessage && (
+                <p className="text-sm truncate opacity-60">
+                  {chat.lastMessage}
+                </p>
+              )}
             </div>
-
-            {/* Unread badge */}
-            {chat.unread && (
-              <div className="min-w-[20px] h-[20px] text-[11px] rounded-full bg-primary text-primary-foreground flex items-center justify-center px-1.5">
-                {chat.unread}
-              </div>
-            )}
           </NavLink>
         ))}
       </div>

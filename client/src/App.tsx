@@ -14,6 +14,7 @@ import Profile from "./pages/profile";
 import { useUser } from "./store/useUser";
 import { authClient } from "./lib/authClient";
 import Chats from "./pages/chats";
+import Add from "./pages/add";
 
 function App() {
   const { setUser, fetchProfile } = useUser();
@@ -55,6 +56,7 @@ function App() {
         <Route element={<ProtectedLayout />}>
           <Route path="/chats" element={<Chats />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/add" element={<Add />} />
         </Route>
       </Route>
 

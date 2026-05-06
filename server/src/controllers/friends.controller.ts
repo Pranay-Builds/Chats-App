@@ -207,10 +207,10 @@ export async function acceptFriendRequest(req: Request, res: Response) {
                 }
             });
 
-            // update request
+            // update request status to ACCEPTED
             await tx.friendRequest.update({
                 where: { id },
-                data: { status: "PENDING" }
+                data: { status: "ACCEPTED" }
             });
         });
 
@@ -287,4 +287,45 @@ export async function removeFriend(req: Request, res: Response) {
             message: "Failed to remove friend"
         });
     }
-}
+};
+
+export async function searchUsers(req: Request, res: Response) {
+    try {
+        const user = req.user;
+        const { q } = req.query as { q?: string };
+
+        console.log("Search query:", q);
+
+        if (!q || q.trim() === "") {
+            return res.json({ ok: true, users: [] });
+        }
+
+        const users = await prisma.user.findMany({
+            where: {
+                AND: [
+                    {
+                        OR: [
+                            { name: { contains: q, mode: "insensitive" } },
+                            { friendCode: { contains: q, mode: "insensitive" } }
+                        ]
+                    },
+                    {
+                        id: { not: user.id }
+                    }
+                ]
+            },
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                friendCode: true
+            },
+            take: 10
+        });
+
+        res.json({ ok: true, users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ ok: false, message: "Search failed" });
+    }
+};

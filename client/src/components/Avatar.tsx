@@ -29,6 +29,7 @@ export default function Avatar({
     <img
       src={image}
       className={`rounded-full object-cover ${className}`}
+      alt={name || "Avatar"}
     />
   ) : (
     <div

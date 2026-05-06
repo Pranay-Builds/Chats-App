@@ -1,4 +1,4 @@
-import { Home, MessageSquare, Phone, Folder, Settings, Sun, Moon } from "lucide-react";
+import { Home, MessageSquare, Phone, Folder, Settings, Sun, Moon, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Avatar from "./Avatar";
@@ -65,6 +65,16 @@ export default function Sidebar() {
                     }
                 >
                     <Folder size={20} />
+                </NavLink>
+
+
+                <NavLink
+                    to="/add"
+                    className={({ isActive }) =>
+                        `${navItem} ${isActive ? activeItem : ""}`
+                    }
+                >
+                    <Plus size={20} />
                 </NavLink>
             </div>
 

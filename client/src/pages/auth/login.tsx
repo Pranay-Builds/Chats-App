@@ -29,7 +29,7 @@ function Login() {
     }
 
     toast.success("Logged in successfully");
-    navigate("/home", { replace: true });
+    navigate("/chats", { replace: true });
     setLoading(false);
   };
 
@@ -70,7 +70,7 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-4 w-full py-2.5 rounded-lg bg-blue-500 font-medium hover:bg-blue-600 transition disabled:opacity-50"
+              className="mt-4 w-full py-2.5 rounded-lg bg-blue-500 font-medium hover:bg-blue-600 text-white transition disabled:opacity-50"
             >
               {loading ? "Logging in..." : "Continue"}
             </button>

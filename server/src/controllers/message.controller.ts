@@ -16,10 +16,10 @@ export async function getChatMessages(req: Request, res: Response) {
         const chat = await prisma.conversation.findFirst({
             where: {
                 id: chatId,
-                members: {
+                members: {                                                                                                                                                                                                                                                                                                                                                                                                                          
                     some: {
                         userId: user.id
-                    }
+                    }       
                 },
             },
             include: {
