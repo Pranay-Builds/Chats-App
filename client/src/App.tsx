@@ -13,6 +13,8 @@ import ProtectedLayout from "./layouts/ProtectedLayout";
 import Profile from "./pages/profile";
 import { useUser } from "./store/useUser";
 import { authClient } from "./lib/authClient";
+import { socket } from "./lib/socket";
+import { usePresence } from "./store/usePresence";
 import Chats from "./pages/chats";
 import Add from "./pages/add";
 import Friends from "./pages/friends";
@@ -23,6 +25,35 @@ function App() {
   const { setUser, fetchProfile } = useUser();
   const { data: session, isPending } = authClient.useSession();
   console.log("User is: " + session?.user);
+  const { onlineUsers, setOnlineUsers } = usePresence();
+
+  useEffect(() => {
+    const handleConnect = () => {
+      console.log("Connected:", socket.id);
+
+      if (session?.user?.id) {
+        socket.emit("user-online", session.user.id);
+      }
+    };
+
+    socket.on("connect", handleConnect);
+
+    return () => {
+      socket.off("connect", handleConnect);
+    };
+  }, [session]);
+
+  useEffect(() => {
+    const handleOnlineUsers = (users: string[]) => {
+      setOnlineUsers(users);
+    };
+
+    socket.on("online-users", handleOnlineUsers);
+
+    return () => {
+      socket.off("online-users", handleOnlineUsers);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isPending && session?.user) {

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 body {
   font-family:
     "Inter",
@@ -15,7 +14,6 @@ body {
     sans-serif;
 }
 
-
 :root {
   --background: 255 255 255;
   --foreground: 15 23 42;
@@ -28,6 +26,22 @@ body {
   --border: 39 44 51;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
 
 @theme {
   --color-background: rgb(var(--background));

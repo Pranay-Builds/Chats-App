@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
+import { io } from "../index.js";
 
 // Get all chats
 export async function getChats(req: Request, res: Response) {
@@ -56,6 +57,8 @@ export async function getChats(req: Request, res: Response) {
         displayName: otherUser?.user.name,
         image: otherUser?.user.image,
         lastMessage: chat.lastMessage,
+        userId: otherUser?.user.id,
+        isGroup: chat.isGroup
       };
     });
 
@@ -293,5 +296,66 @@ export async function leaveChat(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ ok: false, message: "Failed to leave chat" });
+  }
+}
+
+// mark chats as read
+export async function markMessagesAsRead(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    const { chatId } = req.params as { chatId: string };
+
+    // get unread messages not sent by current user
+    const unreadMessages = await prisma.message.findMany({
+      where: {
+        conversationId: chatId,
+
+        senderId: {
+          not: user.id,
+        },
+
+        reads: {
+          none: {
+            userId: user.id,
+          },
+        },
+      },
+
+      select: {
+        id: true,
+      },
+    });
+
+    if (unreadMessages.length === 0) {
+      return res.status(200).json({
+        ok: true,
+      });
+    }
+
+    await prisma.messageRead.createMany({
+      data: unreadMessages.map((msg) => ({
+        messageId: msg.id,
+        userId: user.id,
+      })),
+
+      skipDuplicates: true,
+    });
+
+    io.to(chatId).emit("messages-seen", {
+      chatId,
+      userId: user.id,
+      messageIds: unreadMessages.map((m) => m.id),
+    });
+
+    return res.status(200).json({
+      ok: true,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      ok: false,
+      message: "Failed to mark messages as read",
+    });
   }
 }

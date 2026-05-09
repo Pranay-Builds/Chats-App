@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
+import { setupSocket } from "./socket/index.js";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 import { userRoutes } from "./routes/user.routes.js";
@@ -77,3 +78,5 @@ app.get("/", (_req, res) => {
 server.listen(5000, () => {
   console.log("Server running on http://localhost:5000");
 });
+
+setupSocket(io);
